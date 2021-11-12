@@ -1,0 +1,9 @@
+// If you want to override variables do it here
+// @import 'node_modules/font-awesome/scss/font-awesome.scss';
+@import 'variables';
+
+// Import CoreUI styles
+@import '~@coreui/coreui-pro/scss/coreui.scss';
+
+// If you want to add something do it here
+@import 'custom';

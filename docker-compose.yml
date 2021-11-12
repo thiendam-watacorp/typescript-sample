@@ -1,0 +1,65 @@
+version: '3.5'
+
+services:
+
+  postgres:
+    image: postgres:9.6
+    container_name: 'postgres'
+    restart: always
+    environment:
+      POSTGRES_DB: postgres_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+
+  pgadmin:
+    container_name: 'pg_admin4'
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@domain.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    depends_on: 
+      - postgres
+    ports:
+      - "4000:80"
+
+  nextjs:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: production
+    container_name: 'nextjs'
+    environment:
+      - NODE_ENV=production
+    depends_on: 
+      - postgres
+    ports:
+      - ${NEXTJS_PORT:-3000}:3000
+
+  nextjs-dev:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: development
+      args:
+        DOCKER_UID: ${DOCKER_UID}
+        DOCKER_GID: ${DOCKER_GID}
+    container_name: 'nextjs-dev'
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://root:password@postgres:5432/postgres_db
+      - SYNCHRONIZE=true
+      - LOGGING=true
+    ports:
+      - ${NEXTJS_PORT:-5000}:3000
+    volumes:
+      - ./:/app
+    command: 'yarn dev'
+    stdin_open: true
+    depends_on: 
+      - postgres
+

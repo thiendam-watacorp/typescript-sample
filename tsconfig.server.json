@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "build",
+      "target": "es2017",
+      "isolatedModules": false,
+      "emitDecoratorMetadata": true,
+      "strict": false,
+      "noEmit": false
+    },
+    "exclude": ["node_modules"],
+    "include": ["./**/*.ts"]
+  }
